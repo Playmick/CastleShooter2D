@@ -1,0 +1,19 @@
+Краткое описание:
+Шутер, камера в котором расположена над игроком(Top-Down).
+
+Полное описание:
+Основная цель - прожить как можно дольше, в качестве оружия у игрока есть энергетическое оружие. 
+Вы играете за парня, который провалился во времени. В руках у него оказалось энергетическое оружие, а вдалеке виднелись разъяренные рыцари...
+
+Периодически от поверженных противников остаются монеты, которые персонаж может собирать если наступит на них. 
+После проигрыша игрок может потратить накопленные монеты в магазине, получая за них бонусы, повышающие живучесть персонажа. 
+Побеждая рыцарей вы получаете очки, показывающие ваши достижения в игре. Со временем противники становятся сильнее и быстрее, 
+так что маловероятно, что игра продлится долго. После покупки всех бонусов и поражения, 
+ваши очки переносятся на доску лидеров, а игра заканчивается.
+
+The main goal of the game is to live as long as possible.
+You play as a guy who fell through in time. He had an energy weapon in his hands, 
+and the furious knights could be seen in the distance. Sometimes there are coins left from defeated enemies, 
+which the hero can collect if he steps on them. After losing, the player can spend the accumulated coins in the store, 
+receiving bonuses for them that increase the survivability of the character. After buying all the bonuses and losing, 
+the game ends, and your points are transferred to the leaderboard.
