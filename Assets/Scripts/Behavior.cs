@@ -6,131 +6,134 @@ using UnityEngine.SceneManagement;
 
 public class Behavior : MonoBehaviour
 {
-	public Text txPause;
-	public Text txResume;
-	public Text txExit;
-	public Text txConfirm;
-	
-	public Sprite ruOverheat;
-	public Sprite enOverheat;
-	
-	public GameObject JST1;//движение
-	public GameObject JST2;//стрельба
-	public bool Mobile = false;
-	public SimpleTouchController JST1Scr;
-	public SimpleTouchController JST2Scr;
-	
-	public GameObject uiPause;
-	public GameObject uiButtons;
-	public GameObject uiConfirm;
-	
-	public GameObject player;
-	public GameObject bullet;
-	
-	float TimeToSpawn;
-	public Transform[] SpawnPnts;
-	public int CurrSpPnt;
-	public GameObject Enemy;
-	
-	public GameObject Hearth0;
-	public GameObject Hearth1;
-	public GameObject Hearth2;
-	public GameObject Hearth3;
-	public GameObject Hearth4;
-	public GameObject Hearth5;
-	public GameObject Hearth6;
-	public GameObject Hearth7;
-	public GameObject Hearth8;
-	public GameObject Hearth9;
-	public GameObject Hearth10;
-	public GameObject Hearth11;
-	public GameObject Hearth12;
-	
-	public Sprite spFullHearth;
-	public Sprite spEmptyHearth;
-	private Image imgHearth;
-	public Image imgFillOverheat;
-	public Image txtOverheat;
-	
-	
-	Camera cam;
-	public Vector2 target;
-	//public Vector2 target2;
-	Vector2 PlPos;//позиция игрока
-	Vector2 MovePlayer;
-	float ang;
-	bool life;
-	public int HP = 3;
-	
-	public GameObject MovePnt;
-	public GameObject TrackPnt;
-	
-	public float maxSpeed;
-    public float mvX = 0;
-    public float mvY = 0;
-	public int Score = 0;
-	
-	
-	public Animator anim;
-	
-	private Rigidbody2D rb;
-	
-	//стрельба
-	bool ClkShoot=false;
-	float Overheat = 0;
-	bool isOverheat = false;
-	//public Text txtHP;
-	public Text txtScore;
-	public Text txtCoins;
-	
-	bool posblSht = true; //возможность стрельбы
-	int tmNotPsblSht = 0;
-	
-	public AudioSource ShotAS;
-	
-    // Start is called before the first frame update
+    public Text txPause;
+    public Text txResume;
+    public Text txExit;
+    public Text txConfirm;
+
+    public Sprite ruOverheat;
+    public Sprite enOverheat;
+
+    public GameObject JST1;//движение
+    public GameObject JST2;//стрельба
+    public bool Mobile = false;
+    public SimpleTouchController JST1Scr;
+    public SimpleTouchController JST2Scr;
+
+    public GameObject uiPause;
+    public GameObject uiButtons;
+    public GameObject uiConfirm;
+
+    public GameObject player;
+    public GameObject bullet;
+
+    float TimeToSpawn;
+    public Transform[] SpawnPnts;
+    public int CurrSpPnt;
+    public GameObject Enemy;
+
+    public GameObject Hearth0;
+    public GameObject Hearth1;
+    public GameObject Hearth2;
+    public GameObject Hearth3;
+    public GameObject Hearth4;
+    public GameObject Hearth5;
+    public GameObject Hearth6;
+    public GameObject Hearth7;
+    public GameObject Hearth8;
+    public GameObject Hearth9;
+    public GameObject Hearth10;
+    public GameObject Hearth11;
+    public GameObject Hearth12;
+
+    public Sprite spFullHearth;
+    public Sprite spEmptyHearth;
+    private Image imgHearth;
+    public Image imgFillOverheat;
+    public Image txtOverheat;
+
+
+    Camera cam;
+    public Vector2 target;
+    Vector2 PlPos;//позиция игрока
+    Vector2 MovePlayer;
+    float ang;
+    bool life;
+    public int HP = 3;
+
+    public GameObject MovePnt;
+    public GameObject TrackPnt;
+
+    public float maxSpeed;
+    public float GamepadX = 0;
+    public float GamepadY = 0;
+    public int Score = 0;
+
+
+    public Animator anim;
+
+    private Rigidbody2D rb;
+
+    //стрельба
+    bool ClickShoot = false;
+    float Overheat = 0;
+    bool isOverheat = false;
+    public Text txtScore;
+    public Text txtCoins;
+
+    bool posblSht = true; //возможность стрельбы
+    int tmNotPsblSht = 0;
+
+    public AudioSource ShotAudioSource;
+    
     void Start()
     {
-		//подключаем звук
-		ShotAS = GetComponent<AudioSource>();
-		
-		
-		TimeToSpawn = 3f;
-		HP = 3 + PlayerPrefs.GetInt("Heart");
-		
-		hpGen();
-		
-		maxSpeed = maxSpeed * (100 + (PlayerPrefs.GetInt("PlSpeed")*5) );
-		cam = Camera.main;
+        //подключаем звук, сделано чтобы мышкой не та
+        ShotAudioSource = GetComponent<AudioSource>();
+
+
+        TimeToSpawn = 3f;
+        HP = 3 + PlayerPrefs.GetInt("Heart");
+
+        hpGen();
+
+        maxSpeed = maxSpeed * (100 + (PlayerPrefs.GetInt("PlSpeed") * 5));
+        cam = Camera.main;
         rb = player.GetComponent<Rigidbody2D>();
-		life = true;
-		
-		StartCoroutine(TrackCorut());
-		
-		SpawnPnts = GetComponentsInChildren<Transform>();
-		
-		StartCoroutine(SpawnEnemys());
-		
-		if(!PlayerPrefs.HasKey("coins"))
-		{
-			PlayerPrefs.SetInt("coins", 0);
-		}
-		
-		PlayerPrefs.SetInt("CurScore", 0);
-		
-		/*
-		//мы играем на компе?
-		if (Application.platform == RuntimePlatform.WindowsPlayer)
+        life = true;
+
+        StartCoroutine(TrackCorut());
+
+        SpawnPnts = GetComponentsInChildren<Transform>();
+
+        StartCoroutine(SpawnEnemys());
+
+        if (!PlayerPrefs.HasKey("coins"))
+        {
+            PlayerPrefs.SetInt("coins", 0);
+        }
+
+        PlayerPrefs.SetInt("CurScore", 0);
+
+        //Закомментил потому что проверка не работает
+        Debug.Log(Application.platform);
+        //мы играем на компе?
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
             Mobile = false;
 		else
 			Mobile = true;
-			
-		if(!Mobile)
-			Debug.Log("Мы играем на компутере");
-		*/
-		//Mobile = true;
-		JST1Scr = JST1.GetComponent<SimpleTouchController>();
-		JST2Scr = JST2.GetComponent<SimpleTouchController>();
+        
+        //Mobile = true;
+        if (Mobile)
+        {
+            JST1Scr = JST1.GetComponent<SimpleTouchController>();
+            JST2Scr = JST2.GetComponent<SimpleTouchController>();
+        }
+        else
+        {
+            JST1.SetActive(false);//движение
+            JST2.SetActive(false);//стрельба
+        }
 		
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
@@ -165,10 +168,10 @@ public class Behavior : MonoBehaviour
 			uiPause.SetActive(!uiPause.activeSelf);
 		}
 		txtCoins.text = PlayerPrefs.GetInt("coins").ToString();
-		mvX = 0;
-		mvY = 0;
+		GamepadX = 0;
+		GamepadY = 0;
 		
-		ClkShoot=false;
+		ClickShoot=false;
 		
 		if(life && !uiPause.activeSelf)
 		{
@@ -176,12 +179,12 @@ public class Behavior : MonoBehaviour
 			{
 				if(JST1Scr.touchPresent)//если держим стик
 				{
-					mvX = JST1Scr.movementVector.x;
-					mvY = JST1Scr.movementVector.y;
+					GamepadX = JST1Scr.movementVector.x;
+					GamepadY = JST1Scr.movementVector.y;
 				}
 				if(JST2Scr.touchPresent && (JST2Scr.movementVector.x!=0 || JST2Scr.movementVector.y!=0))
 				{
-					ClkShoot=true;
+					ClickShoot=true;
 					//target2 = target;
 					target = new Vector2 (JST2Scr.movementVector.x, JST2Scr.movementVector.y);
 					
@@ -191,29 +194,25 @@ public class Behavior : MonoBehaviour
 			{
 				if (Input.GetMouseButton(0))
 				{
-					ClkShoot=true;
+					ClickShoot=true;
 				}
 				
 				if(Input.GetKey(KeyCode.A))
-					mvX -= 1;
+					GamepadX -= 1;
 				
 				if(Input.GetKey(KeyCode.D))
-					mvX += 1;
+					GamepadX += 1;
 				
 				if(Input.GetKey(KeyCode.W))
-					mvY += 1;
+					GamepadY += 1;
 				
 				if(Input.GetKey(KeyCode.S))
-					mvY -= 1;
+					GamepadY -= 1;
 				
 				target = new Vector2 (Input.mousePosition.x - (Screen.width/2), Input.mousePosition.y - (Screen.height/2));
 			
 			}
 		}
-		//Debug.Log("Высота? " + Screen.width);
-		//Debug.Log(Screen.height);
-		//Debug.Log(target);
-		
 	}
 
     // Update is called once per frame
@@ -295,7 +294,7 @@ public class Behavior : MonoBehaviour
 		if(!uiPause.activeSelf)
 			ShootMet();
 		
-		MovePlayer = new Vector2(mvX, mvY);
+		MovePlayer = new Vector2(GamepadX, GamepadY);
 		
 		if(Mobile)
 		{
@@ -306,9 +305,9 @@ public class Behavior : MonoBehaviour
 			rb.velocity = MovePlayer.normalized * maxSpeed * Time.fixedDeltaTime;
 		}
 		
-		if (mvX!=0 && mvY!=0)
+		if (GamepadX!=0 && GamepadY!=0)
 		{
-			MovePnt.transform.position = new Vector2( player.transform.position.x +(mvX*100f), player.transform.position.y + (mvY*100f));
+			MovePnt.transform.position = new Vector2( player.transform.position.x +(GamepadX*100f), player.transform.position.y + (GamepadY*100f));
 		}
 		
 		MoveCameraToPlayer();
@@ -377,25 +376,25 @@ public class Behavior : MonoBehaviour
 		if(life)//если персонаж жив
 		{
 			if (ang>315 || ang<45)//если мышка сверху
-				if(mvX==0 && mvY==0)//если персонаж не двигается
+				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 10);//смотрим ввверх
 												  //в противном случае
 				else anim.SetInteger("PLanim", 20);//идём вверх
 			
 			if (ang>45f && ang<135)//если мышка справа
-				if(mvX==0 && mvY==0)//если персонаж не двигается
+				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 13);//смотрим вправо
 												  //в противном случае
 				else anim.SetInteger("PLanim", 23);//движение вправо
 			
 			if (ang>135 && ang<225)//если мышка снизу
-				if(mvX==0 && mvY==0)//если персонаж не двигается
+				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 16);//смотрим вниз
 												  //в противном случае
 				else anim.SetInteger("PLanim", 26);//идём вниз
 			
 			if (ang>225 && ang<315)//если мышка слева
-				if(mvX==0 && mvY==0)//если персонаж не двигается
+				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 19);//смотрим вниз
 												  //в противном случае
 				else anim.SetInteger("PLanim", 29);//идём вниз
@@ -414,12 +413,12 @@ public class Behavior : MonoBehaviour
 	
 	void ShootMet()//система стрельбы
 	{
-		if(ClkShoot && posblSht && !isOverheat)//если мы кликнули мышкой и скорострельность позволяет и перегрев менее 100%
+		if(ClickShoot && posblSht && !isOverheat)//если мы кликнули мышкой и скорострельность позволяет и перегрев менее 100%
 		{
-			if (ShotAS.isPlaying) //Проверяем, если звук выстрела проигрывается
-				ShotAS.Stop();//останавливаем
+			if (ShotAudioSource.isPlaying) //Проверяем, если звук выстрела проигрывается
+				ShotAudioSource.Stop();//останавливаем
 			
-			ShotAS.Play(); //Проигрываем
+			ShotAudioSource.Play(); //Проигрываем
 			Instantiate(bullet, player.transform.position, Quaternion.identity);//создаем пулю
 			tmNotPsblSht = 25 - PlayerPrefs.GetInt("BulletSpeed");//пол секунды нельзя стрелять(метод выполняется 50 раз в секунду)
 			posblSht = false;//отключаем стрельбу
@@ -433,7 +432,7 @@ public class Behavior : MonoBehaviour
 			posblSht = true;//включаем возможность стрельбы!
 		}
 		
-		if(ClkShoot && !isOverheat)	//если кликаем на стрельбу и перегрев < 100%
+		if(ClickShoot && !isOverheat)	//если кликаем на стрельбу и перегрев < 100%
 		{
 			//если разница 0.2 то 1 прокачка должна снимать 0.06 перегрева и вычитать её из нижней строки
 			Overheat += 0.4f + (PlayerPrefs.GetInt("BulletSpeed")/25f) - (  (0.8f-(1f - (0.4f + (PlayerPrefs.GetInt("BulletSpeed")/25f))))/10f * PlayerPrefs.GetInt("Overheat"));//перегреваем)
@@ -445,7 +444,7 @@ public class Behavior : MonoBehaviour
 			txtOverheat.enabled = isOverheat;//надпись "перегрев"
 		}
 			
-		if(!ClkShoot && !isOverheat && posblSht)//если игрок не пытается стрелять, охлаждаем оружие
+		if(!ClickShoot && !isOverheat && posblSht)//если игрок не пытается стрелять, охлаждаем оружие
 			Overheat -= 1f;
 		
 		if(Overheat<=0)//оружие охладилось
@@ -519,9 +518,9 @@ public class Behavior : MonoBehaviour
 	{
 		while(true)
 		{
-			if (mvX!=0 || mvY!=0)
+			if (GamepadX!=0 || GamepadY!=0)
 			{
-				TrackPnt.transform.position = new Vector2( player.transform.position.x +(-mvX*100f), player.transform.position.y + (-mvY*100f));
+				TrackPnt.transform.position = new Vector2( player.transform.position.x +(-GamepadX*100f), player.transform.position.y + (-GamepadY*100f));
 			}
 			
 			yield return new WaitForSeconds(3f);

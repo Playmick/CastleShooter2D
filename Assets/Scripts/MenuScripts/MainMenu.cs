@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-	public AudioSource audio;
-	
-	public Text txPlay;
+    [SerializeField]AudioSource audio;
+
+    public Text txPlay;
 	public Text txScore;
 	public Text txHelp;
 	public Text txCredits;
@@ -21,7 +21,7 @@ public class MainMenu : MonoBehaviour
 	
 	void Start()
 	{
-		audio = GetComponent<AudioSource>();
+        audio = GetComponent<AudioSource>();
 		
 		PlayerPrefs.SetInt("coins", 0);
 		PlayerPrefs.SetInt("Heart", 0);
@@ -62,53 +62,56 @@ public class MainMenu : MonoBehaviour
 			PlayerPrefs.SetInt("Rank10", 0);
 		
 		LangChange();
+
+        DontDestroyOnLoad(this.gameObject);
 		
 	}
     public void OnClickPlay()
 	{
-		
-		SceneManager.LoadScene("Survival");
+        audio.Play();
+        SceneManager.LoadScene("Survival");
 	}
 	
     public void OnClickLeaderboard()
 	{
-		
-		SceneManager.LoadScene("Leaderboard");
+        audio.Play();
+        SceneManager.LoadScene("Leaderboard");
 	}
 	
 	public void OnClickHelp()
 	{
-		
-		SceneManager.LoadScene("Help");
+        audio.Play();
+        SceneManager.LoadScene("Help");
 	}
 	
 	public void OnClickCredits()
 	{
-		
-		SceneManager.LoadScene("Credits");
+        audio.Play();
+        SceneManager.LoadScene("Credits");
 	}
 	
 	public void OnClickOptions()
 	{
-		
-		SceneManager.LoadScene("Options");
+        audio.Play();
+        SceneManager.LoadScene("Options");
 	}
 	
 	public void OnClickExit()
 	{
-		
+		audio.Play();
 		Application.Quit();
 	}
 	
 	public void OnClickDeleteAll()
 	{
-		PlayerPrefs.DeleteAll();
+        audio.Play();
+        PlayerPrefs.DeleteAll();
 	}
 	
 	public void OnClickBack()
 	{
-		
-		SceneManager.LoadScene("MainMenu");
+        audio.Play();
+        SceneManager.LoadScene("MainMenu");
 	}
 	
 	public void OnClickLanguage()
