@@ -1,25 +1,48 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 
 namespace Architecture
 {
     class ArchTester : MonoBehaviour
     {
-        private BankRepository bankRepository;
-        private BankInteractor bankInteractor;
+        public static RepositoriesBase repositoriesBase;
+        public static InteractorsBase interactorsBase;
 
         private void Start()
         {
-            
-            this.bankRepository = new BankRepository();
-            this.bankRepository.Initialize();
+            this.StartCoroutine(this.StartGameRoutine());
+        }
 
-            this.bankInteractor = new BankInteractor(this.bankRepository);
-            this.bankInteractor.Initialize();
+        private IEnumerator StartGameRoutine()
+        {
+            repositoriesBase = new RepositoriesBase();
+            interactorsBase = new InteractorsBase();
+
+            repositoriesBase.CreateAllRepositories();
+            interactorsBase.CreateAllInteractors();
+
+            yield return null;
+
+            repositoriesBase.SendOnCreateToAllRepositories();
+            interactorsBase.SendOnCreateToAllInteractors();
+            yield return null;
+
+            //этот метод может обрабатывать огромные объемы данных поэтому его рекомендуется выполнять через корутину
+
+            repositoriesBase.InitializeAllRepositories();
+            interactorsBase.InitializeAllInteractors();
+            yield return null;
+
+            repositoriesBase.SendOnStartToAllRepositories();
+            interactorsBase.SendOnStartToAllInteractors();
+            yield return null;
         }
 
         private void Update()
         {
+            if (!Bank.isInitialized)
+                return;
             if(Input.GetKeyDown(KeyCode.A))
             {
                 Bank.AddCoins(this, 5);
