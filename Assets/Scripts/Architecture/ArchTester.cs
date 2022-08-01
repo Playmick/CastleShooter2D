@@ -1,43 +1,21 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using Architecture.Scenes;
 
 namespace Architecture
 {
     class ArchTester : MonoBehaviour
     {
-        public static RepositoriesBase repositoriesBase;
-        public static InteractorsBase interactorsBase;
-
+        public static Scene scene;
         private void Start()
         {
-            this.StartCoroutine(this.StartGameRoutine());
+            var sceneConfig = new SceneConfigExample();
+            scene = new Scene(sceneConfig);
+
+            this.StartCoroutine(scene.InitializeRoutine());
         }
-
-        private IEnumerator StartGameRoutine()
-        {
-            repositoriesBase = new RepositoriesBase();
-            interactorsBase = new InteractorsBase();
-
-            repositoriesBase.CreateAllRepositories();
-            interactorsBase.CreateAllInteractors();
-
-            yield return null;
-
-            repositoriesBase.SendOnCreateToAllRepositories();
-            interactorsBase.SendOnCreateToAllInteractors();
-            yield return null;
-
-            //этот метод может обрабатывать огромные объемы данных поэтому его рекомендуется выполнять через корутину
-
-            repositoriesBase.InitializeAllRepositories();
-            interactorsBase.InitializeAllInteractors();
-            yield return null;
-
-            repositoriesBase.SendOnStartToAllRepositories();
-            interactorsBase.SendOnStartToAllInteractors();
-            yield return null;
-        }
+        
 
         private void Update()
         {

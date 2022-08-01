@@ -7,27 +7,25 @@ namespace Architecture
     {
         //интеракторы хранятся в списке
         private Dictionary<Type, Interactor> interactorsMap;
-        public InteractorsBase()
+
+        //база интеракторов должна знать для какой сцены она создается
+        private SceneConfig sceneConfig;
+
+        public InteractorsBase(SceneConfig sceneConfig)
         {
-            this.interactorsMap = new Dictionary<Type, Interactor>();
+            this.sceneConfig = sceneConfig;
         }
 
         public void CreateAllInteractors()
         {
-            CreateInteractor<BankInteractor>();
-
-            /* CreateInteractor<BankInteractor>();
+            this.interactorsMap = this.sceneConfig.CreateAllInteractors();
+            /*CreateInteractor<BankInteractor>();
+             *
+             *CreateInteractor<BankInteractor>();
              * CreateInteractor<BankInteractor>();
              * CreateInteractor<BankInteractor>();
              * CreateInteractor<BankInteractor>();
              * */
-        }
-
-        private void CreateInteractor<T>() where T: Interactor, new()
-        {
-            var interactor = new T();
-            var type = typeof(T);
-            this.interactorsMap[type] = interactor;
         }
 
         public void SendOnCreateToAllInteractors()

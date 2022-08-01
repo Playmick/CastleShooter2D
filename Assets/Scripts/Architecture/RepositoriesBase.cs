@@ -10,21 +10,16 @@ namespace Architecture
     {
         //интеракторы хранятся в списке
         private Dictionary<Type, Repository> repositoriesMap;
+        private SceneConfig sceneConfig;
 
-        public RepositoriesBase()
+        public RepositoriesBase(SceneConfig sceneConfig)
         {
-            this.repositoriesMap = new Dictionary<Type, Repository>();
+            this.sceneConfig = sceneConfig;
         }
 
         public void CreateAllRepositories()
         {
-            CreateRepository<BankRepository>();
-
-            /* CreateRepository<BankRepository>();
-             * CreateRepository<BankRepository>();
-             * CreateRepository<BankRepository>();
-             * CreateRepository<BankRepository>();
-             * */
+            this.repositoriesMap = this.sceneConfig.CreateAllRepositories();
         }
 
         private void CreateRepository<T>() where T : Repository, new()

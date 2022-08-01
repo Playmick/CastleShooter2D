@@ -6,12 +6,10 @@
 
         public int coins => this.repository.coins;
 
-        
-
         public override void OnCreate()
         {
             base.OnCreate();
-            this.repository = ArchTester.repositoriesBase.GetRepository<BankRepository>();
+            this.repository = ArchTester.scene.GetRepository<BankRepository>();
         }
 
         public override void Initialize()
