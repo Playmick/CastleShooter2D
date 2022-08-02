@@ -8,6 +8,9 @@ namespace Architecture.Scenes
 {
     public class SceneConfigExample : SceneConfig
     {
+        public const string SCENE_NAME = "ArcTest";
+        public override string sceneName => SCENE_NAME;
+
         public override Dictionary<Type, Repository> CreateAllRepositories()
         {
             var repositoriesMap = new Dictionary<Type, Repository>();

@@ -9,7 +9,7 @@
         public override void OnCreate()
         {
             base.OnCreate();
-            this.repository = ArchTester.scene.GetRepository<BankRepository>();
+            this.repository = ArchTester.sceneManager.GetRepository<BankRepository>();
         }
 
         public override void Initialize()

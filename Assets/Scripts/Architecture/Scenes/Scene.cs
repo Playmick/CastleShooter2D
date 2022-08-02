@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Architecture;
+﻿using System.Collections;
+using UnityEngine;
+using Architecture.Routine;
 
 namespace Architecture.Scenes
 {
@@ -25,7 +24,12 @@ namespace Architecture.Scenes
             this.repositoriesBase = new RepositoriesBase(config);
         }
 
-        public IEnumerator InitializeRoutine()
+        public Coroutine InitializeAsync()
+        {
+            return Coroutines.StartRoutine(this.InitializeRoutine());
+        }
+
+        private IEnumerator InitializeRoutine()
         {
             repositoriesBase.CreateAllRepositories();
             interactorsBase.CreateAllInteractors();

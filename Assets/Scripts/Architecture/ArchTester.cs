@@ -7,13 +7,13 @@ namespace Architecture
 {
     class ArchTester : MonoBehaviour
     {
-        public static Scene scene;
+        public static SceneManagerBase sceneManager;
+
         private void Start()
         {
-            var sceneConfig = new SceneConfigExample();
-            scene = new Scene(sceneConfig);
-
-            this.StartCoroutine(scene.InitializeRoutine());
+            sceneManager = new SceneManagerExample();
+            sceneManager.InitScenesMap();
+            sceneManager.LoadCurrentSceneAsync();
         }
         
 
