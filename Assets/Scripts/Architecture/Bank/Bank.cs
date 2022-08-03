@@ -18,7 +18,7 @@ namespace Architecture
                 return bankInteractor.coins;
             }
         }
-        public static bool isInitialized { get; set; }
+        public static bool isInitialized { get; private set; }
 
         private static BankInteractor bankInteractor;
 

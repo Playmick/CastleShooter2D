@@ -11,7 +11,7 @@ namespace Architecture.Scenes
         public override void InitScenesMap()
         {
             this.sceneConfigMap[SceneConfigExample.SCENE_NAME] = new SceneConfigExample();
-            //инициализируем крохотный список сцен
+            //инициализируем крохотный список сцен)))
         }
     }
 }

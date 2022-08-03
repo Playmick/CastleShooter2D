@@ -32,6 +32,7 @@ namespace Architecture.Scenes
             var interactorsMap = new Dictionary<Type, Interactor>();
 
             this.CreateInteractor<BankInteractor>(interactorsMap);
+            this.CreateInteractor<PlayerInteractor>(interactorsMap);
             //тут мы можем создавать множество таких же интеракторов, просто сейчас он существует только один
             //(Банковский интерактор работающий с банком)
             //поэтому я множу код
