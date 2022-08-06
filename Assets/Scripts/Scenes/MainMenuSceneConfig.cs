@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Architecture.Scenes
 {
-    public class SceneConfigExample : SceneConfig
+    public class MainMenuSceneConfig : SceneConfig
     {
-        public const string SCENE_NAME = "ArcTest";
+        public const string SCENE_NAME = "MainMenu";
         public override string sceneName => SCENE_NAME;
 
         public override Dictionary<Type, Repository> CreateAllRepositories()

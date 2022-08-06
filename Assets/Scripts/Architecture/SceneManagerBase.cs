@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using Architecture.Routine;
 using UnityEngine;
 
-namespace Architecture.Scenes
+namespace Architecture
 {
     //обёртка вокруг классического Unity SceneManager
     //она умеет загружать и инициализировать репозитории и интеракторы в асинхронном режиме

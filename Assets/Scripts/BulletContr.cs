@@ -6,18 +6,17 @@ public class BulletContr : MonoBehaviour
 {
 	public int Damage = 1;
 	public float speed;
-	//private Rigidbody2D rb;
 	private Transform player;
 	Vector2 targetDir;
 	Vector2 target;
-	
-	EnemyContr script;
-	Behavior GMscript;
+
+    EnemyContr script;
+	Beh GMscript;
 	
     // Start is called before the first frame update
     void Start()
     {
-		GMscript = GameObject.Find("GM").GetComponent<Behavior>();
+		GMscript = GameObject.Find("GM").GetComponent<Beh>();
 		
 		Damage *= 10;
 		Damage += 5 * PlayerPrefs.GetInt("Attack");
@@ -34,10 +33,6 @@ public class BulletContr : MonoBehaviour
 			Vector2 PlPos = new Vector2(player.position.x, player.position.y);
 			targetDir = target - PlPos;/*Vector2.zero;*/
 		}
-		
-		
-		
-		
     }
 
     // Update is called once per frame
@@ -58,18 +53,18 @@ public class BulletContr : MonoBehaviour
 		}
 		if (coll.gameObject.tag == "Enemy") {
 			script = coll.gameObject.GetComponent<EnemyContr>();
-			if(script.HP>0)
+			if(script.hp>0)
 			{
-				if(Damage - script.HP>0)
+				if(Damage - script.hp>0)
 				{
 					//пуля убивает противника и должна лететь дальше
-					Damage -= script.HP;
-					script.HP = 0;
+					Damage -= script.hp;
+					script.hp = 0;
 				}
 				else
 				{
 					//у противника хп больше чем атака пули
-					script.HP -= Damage;
+					script.hp -= Damage;
 					Destroy(gameObject);
 				}
 				

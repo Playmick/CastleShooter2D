@@ -32847,7 +32847,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519585182
 GameObject:
@@ -37469,7 +37469,7 @@ RectTransform:
   - {fileID: 1384105403}
   - {fileID: 825275615}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -100445,17 +100445,17 @@ MonoBehaviour:
   imgFillOverheat: {fileID: 1718678093}
   txtOverheat: {fileID: 697335439}
   target: {x: 0, y: 0}
-  HP: 3
+  hp: 3
   MovePnt: {fileID: 1972887573}
   TrackPnt: {fileID: 529456516}
   maxSpeed: 30
-  mvX: 0
-  mvY: 0
+  GamepadX: 0
+  GamepadY: 0
   Score: 0
   anim: {fileID: 317874466}
   txtScore: {fileID: 1299334129}
   txtCoins: {fileID: 110766712}
-  ShotAS: {fileID: 0}
+  ShotAudioSource: {fileID: 0}
 --- !u!4 &1618619077
 Transform:
   m_ObjectHideFlags: 0
@@ -100516,7 +100516,7 @@ Transform:
   - {fileID: 1619775177}
   - {fileID: 1703649223}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1618619078
 AudioSource:
@@ -139864,7 +139864,7 @@ PrefabInstance:
     - target: {fileID: 7212838719928363647, guid: 164e6abe7e7fba04ba9b20b03e72bafe,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7212838719928363647, guid: 164e6abe7e7fba04ba9b20b03e72bafe,
         type: 3}

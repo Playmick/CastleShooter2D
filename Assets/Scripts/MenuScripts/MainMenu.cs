@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
 	public Text txHelp;
 	public Text txCredits;
 	public Text txExit;
-	public GameObject txGT;
+	public GameObject textGoogleTranslate;
 	
 	public Sprite btRus;
 	public Sprite btEng;
@@ -63,7 +63,7 @@ public class MainMenu : MonoBehaviour
 		
 		LangChange();
 
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
 		
 	}
     public void OnClickPlay()
@@ -139,7 +139,7 @@ public class MainMenu : MonoBehaviour
 			txHelp.text = "Помощь";
 			txCredits.text = "Создатели";
 			txExit.text = "Выход";
-			txGT.SetActive(false);
+			textGoogleTranslate.SetActive(false);
 			btLang.sprite = btEng;
 		}
 		else
@@ -149,7 +149,7 @@ public class MainMenu : MonoBehaviour
 			txHelp.text = "Help";
 			txCredits.text = "Credits";
 			txExit.text = "Exit";
-			txGT.SetActive(true);
+			textGoogleTranslate.SetActive(true);
 			btLang.sprite = btRus;
 		}
 	}
@@ -168,8 +168,6 @@ public class MainMenu : MonoBehaviour
 				  break;
 			}
 		}
-		
-		
 	}
 	
 	

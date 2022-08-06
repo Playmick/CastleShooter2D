@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class Behavior : MonoBehaviour
+public class Beh : MonoBehaviour
 {
     public Text txPause;
     public Text txResume;
@@ -57,9 +57,9 @@ public class Behavior : MonoBehaviour
     public Vector2 target;
     Vector2 PlPos;//позиция игрока
     Vector2 MovePlayer;
-    float ang;
-    bool life;
-    public int HP = 3;
+    float _angle;
+    bool _playerIsLife;
+    public int hp = 3;
 
     public GameObject MovePnt;
     public GameObject TrackPnt;
@@ -93,14 +93,14 @@ public class Behavior : MonoBehaviour
 
 
         TimeToSpawn = 3f;
-        HP = 3 + PlayerPrefs.GetInt("Heart");
+        hp = 3 + PlayerPrefs.GetInt("Heart");
 
         hpGen();
 
         maxSpeed = maxSpeed * (100 + (PlayerPrefs.GetInt("PlSpeed") * 5));
         cam = Camera.main;
         rb = player.GetComponent<Rigidbody2D>();
-        life = true;
+        _playerIsLife = true;
 
         StartCoroutine(TrackCorut());
 
@@ -115,8 +115,6 @@ public class Behavior : MonoBehaviour
 
         PlayerPrefs.SetInt("CurScore", 0);
 
-        //Закомментил потому что проверка не работает
-        Debug.Log(Application.platform);
         //мы играем на компе?
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
             Mobile = false;
@@ -173,7 +171,7 @@ public class Behavior : MonoBehaviour
 		
 		ClickShoot=false;
 		
-		if(life && !uiPause.activeSelf)
+		if(_playerIsLife && !uiPause.activeSelf)
 		{
 			if(Mobile)
 			{
@@ -218,73 +216,73 @@ public class Behavior : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-		if(HP<13 && ((3 + PlayerPrefs.GetInt("Heart"))>=13) )
+		if(hp<13 && ((3 + PlayerPrefs.GetInt("Heart"))>=13) )
 		{
 			imgHearth = Hearth12.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<12 && ((3 + PlayerPrefs.GetInt("Heart"))>=12) )
+		if(hp<12 && ((3 + PlayerPrefs.GetInt("Heart"))>=12) )
 		{
 			imgHearth = Hearth11.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<11 && ((3 + PlayerPrefs.GetInt("Heart"))>=11) )
+		if(hp<11 && ((3 + PlayerPrefs.GetInt("Heart"))>=11) )
 		{
 			imgHearth = Hearth10.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<10 && ((3 + PlayerPrefs.GetInt("Heart"))>=10) )
+		if(hp<10 && ((3 + PlayerPrefs.GetInt("Heart"))>=10) )
 		{
 			imgHearth = Hearth9.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<9 && ((3 + PlayerPrefs.GetInt("Heart"))>=9) )
+		if(hp<9 && ((3 + PlayerPrefs.GetInt("Heart"))>=9) )
 		{
 			imgHearth = Hearth8.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<8 && ((3 + PlayerPrefs.GetInt("Heart"))>=8) )
+		if(hp<8 && ((3 + PlayerPrefs.GetInt("Heart"))>=8) )
 		{
 			imgHearth = Hearth7.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<7 && ((3 + PlayerPrefs.GetInt("Heart"))>=7) )
+		if(hp<7 && ((3 + PlayerPrefs.GetInt("Heart"))>=7) )
 		{
 			imgHearth = Hearth6.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<6 && ((3 + PlayerPrefs.GetInt("Heart"))>=6) )
+		if(hp<6 && ((3 + PlayerPrefs.GetInt("Heart"))>=6) )
 		{
 			imgHearth = Hearth5.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<5 && ((3 + PlayerPrefs.GetInt("Heart"))>=5) )
+		if(hp<5 && ((3 + PlayerPrefs.GetInt("Heart"))>=5) )
 		{
 			imgHearth = Hearth4.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<4 && ((3 + PlayerPrefs.GetInt("Heart"))>=4) )
+		if(hp<4 && ((3 + PlayerPrefs.GetInt("Heart"))>=4) )
 		{
 			imgHearth = Hearth3.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<3)
+		if(hp<3)
 		{
 			imgHearth = Hearth2.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<2)
+		if(hp<2)
 		{
 			imgHearth = Hearth1.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
-		if(HP<1)
+		if(hp<1)
 		{
 			imgHearth = Hearth0.GetComponent<Image>();
 			imgHearth.sprite = spEmptyHearth;
 		}
 		
-        //txtHP.text = HP.ToString();
+        //txthp.text = hp.ToString();
 		//txtOverheat.text = Mathf.RoundToInt(Overheat).ToString();
 		if(PlayerPrefs.GetInt("ru") == 1)
 			txtScore.text = "Счёт: " + Score.ToString();
@@ -364,46 +362,46 @@ public class Behavior : MonoBehaviour
 		
 		Vector2 targetDir = target - /*PlPos*/ Vector2.zero;
 		
-		ang = Vector2.SignedAngle(targetDir, Vector2.up);
+		_angle = Vector2.SignedAngle(targetDir, Vector2.up);
 		//Debug.Log(vision.transform.position);
 		
 		
-		if (ang<0)
-			ang = 360f+ang;
+		if (_angle<0)
+			_angle = 360f+_angle;
 		
-		//Debug.Log(ang);
+		//Debug.Log(_angle);
 		
-		if(life)//если персонаж жив
+		if(_playerIsLife)//если персонаж жив
 		{
-			if (ang>315 || ang<45)//если мышка сверху
+			if (_angle>315 || _angle<45)//если мышка сверху
 				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 10);//смотрим ввверх
 												  //в противном случае
 				else anim.SetInteger("PLanim", 20);//идём вверх
 			
-			if (ang>45f && ang<135)//если мышка справа
+			if (_angle>45f && _angle<135)//если мышка справа
 				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 13);//смотрим вправо
 												  //в противном случае
 				else anim.SetInteger("PLanim", 23);//движение вправо
 			
-			if (ang>135 && ang<225)//если мышка снизу
+			if (_angle>135 && _angle<225)//если мышка снизу
 				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 16);//смотрим вниз
 												  //в противном случае
 				else anim.SetInteger("PLanim", 26);//идём вниз
 			
-			if (ang>225 && ang<315)//если мышка слева
+			if (_angle>225 && _angle<315)//если мышка слева
 				if(GamepadX==0 && GamepadY==0)//если персонаж не двигается
 					anim.SetInteger("PLanim", 19);//смотрим вниз
 												  //в противном случае
 				else anim.SetInteger("PLanim", 29);//идём вниз
 			
 		}
-		if (HP<=0&&life)//если персонаж был жив и хп опустилось до нуля
+		if (hp<=0&&_playerIsLife)//если персонаж был жив и хп опустилось до нуля
 		{
 			anim.SetInteger("PLanim", 30);//анимация смерти
-			life = false;//персонаж больше не жив)
+			_playerIsLife = false;//персонаж больше не жив)
 			
 			PlayerPrefs.SetInt("CurScore", Score);
 			
@@ -531,7 +529,7 @@ public class Behavior : MonoBehaviour
 	{
 		while(true)
 		{
-			if(life && !uiPause.activeSelf)
+			if(_playerIsLife && !uiPause.activeSelf)
 			{
 				CurrSpPnt = Random.Range( 1, transform.childCount );
 			

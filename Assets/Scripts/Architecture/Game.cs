@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Architecture
 {
-    public class Game : MonoBehaviour
+    public static class Game
     {
         public static bool isRun { get; private set; }
 
@@ -14,13 +14,8 @@ namespace Architecture
         public static SceneManagerBase sceneManager { get; private set; }
         public static void Run()
         {
-            sceneManager = new SceneManagerExample();
+            sceneManager = new SceneManager();
             Coroutines.StartRoutine(InitializeGameRoutine());
-        }
-
-        private void Start()
-        {
-            Run();
         }
 
         //в этой корутине инициализируем игру

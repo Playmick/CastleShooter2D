@@ -2,7 +2,7 @@
 using UnityEngine;
 using Architecture.Routine;
 
-namespace Architecture.Scenes
+namespace Architecture
 {
     //этот класс хранит базу репозиториев и базу интеракторов
     public class Scene
