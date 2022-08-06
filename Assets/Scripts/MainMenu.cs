@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField]AudioSource audio;
-
-    public Text txPlay;
+	public AudioSource audio;
+	
+	public Text txPlay;
 	public Text txScore;
 	public Text txHelp;
 	public Text txCredits;
 	public Text txExit;
-	public GameObject textGoogleTranslate;
+	public GameObject txGT;
 	
 	public Sprite btRus;
 	public Sprite btEng;
@@ -21,7 +21,7 @@ public class MainMenu : MonoBehaviour
 	
 	void Start()
 	{
-        audio = GetComponent<AudioSource>();
+		audio = GetComponent<AudioSource>();
 		
 		PlayerPrefs.SetInt("coins", 0);
 		PlayerPrefs.SetInt("Heart", 0);
@@ -62,56 +62,53 @@ public class MainMenu : MonoBehaviour
 			PlayerPrefs.SetInt("Rank10", 0);
 		
 		LangChange();
-
-        //DontDestroyOnLoad(this.gameObject);
 		
 	}
     public void OnClickPlay()
 	{
-        audio.Play();
-        SceneManager.LoadScene("Survival");
+		
+		SceneManager.LoadScene("Survival");
 	}
 	
     public void OnClickLeaderboard()
 	{
-        audio.Play();
-        SceneManager.LoadScene("Leaderboard");
+		
+		SceneManager.LoadScene("Leaderboard");
 	}
 	
 	public void OnClickHelp()
 	{
-        audio.Play();
-        SceneManager.LoadScene("Help");
+		
+		SceneManager.LoadScene("Help");
 	}
 	
 	public void OnClickCredits()
 	{
-        audio.Play();
-        SceneManager.LoadScene("Credits");
+		
+		SceneManager.LoadScene("Credits");
 	}
 	
 	public void OnClickOptions()
 	{
-        audio.Play();
-        SceneManager.LoadScene("Options");
+		
+		SceneManager.LoadScene("Options");
 	}
 	
 	public void OnClickExit()
 	{
-		audio.Play();
+		
 		Application.Quit();
 	}
 	
 	public void OnClickDeleteAll()
 	{
-        audio.Play();
-        PlayerPrefs.DeleteAll();
+		PlayerPrefs.DeleteAll();
 	}
 	
 	public void OnClickBack()
 	{
-        audio.Play();
-        SceneManager.LoadScene("MainMenu");
+		
+		SceneManager.LoadScene("MainMenu");
 	}
 	
 	public void OnClickLanguage()
@@ -139,7 +136,7 @@ public class MainMenu : MonoBehaviour
 			txHelp.text = "Помощь";
 			txCredits.text = "Создатели";
 			txExit.text = "Выход";
-			textGoogleTranslate.SetActive(false);
+			txGT.SetActive(false);
 			btLang.sprite = btEng;
 		}
 		else
@@ -149,7 +146,7 @@ public class MainMenu : MonoBehaviour
 			txHelp.text = "Help";
 			txCredits.text = "Credits";
 			txExit.text = "Exit";
-			textGoogleTranslate.SetActive(true);
+			txGT.SetActive(true);
 			btLang.sprite = btRus;
 		}
 	}
@@ -168,6 +165,8 @@ public class MainMenu : MonoBehaviour
 				  break;
 			}
 		}
+		
+		
 	}
 	
 	
