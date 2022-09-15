@@ -5,17 +5,17 @@ using Gameplay;
 
 namespace Scenes
 {
-    public class MainMenuSceneConfig : SceneConfig
+    public class ShopSceneConfig : SceneConfig
     {
-        public const string SCENE_NAME = "MainMenu";
+        public const string SCENE_NAME = "Shop";
         public override string sceneName => SCENE_NAME;
 
         public override Dictionary<Type, Repository> CreateAllRepositories()
         {
             var repositoriesMap = new Dictionary<Type, Repository>();
 
-            //заккоментил потому что в главном меню не нужен ни игрок ни банк
-            //this.CreateRepository<BankRepository>(repositoriesMap);
+            this.CreateRepository<BankRepository>(repositoriesMap);
+            this.CreateRepository<SkillsRepository>(repositoriesMap);
             //тут мы можем создавать множество таких же репозиториев, просто сейчас он существует только один
             //(Банковский репозиторий хранящий денюжки)
             //поэтому я множу код
@@ -31,10 +31,8 @@ namespace Scenes
         {
             var interactorsMap = new Dictionary<Type, Interactor>();
 
-            /*
-             * заккоментил потому что в главном меню не нужен ни игрок ни банк
             this.CreateInteractor<BankInteractor>(interactorsMap);
-            this.CreateInteractor<PlayerInteractor>(interactorsMap);*/
+            this.CreateInteractor<SkillsInteractor>(interactorsMap);
             //тут мы можем создавать множество таких же интеракторов, просто сейчас он существует только один
             //(Банковский интерактор работающий с банком)
             //поэтому я множу код

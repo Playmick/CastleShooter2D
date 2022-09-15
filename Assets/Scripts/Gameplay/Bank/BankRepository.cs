@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using Architecture;
 
-public class BankRepository : Repository
+namespace Gameplay
 {
-    private const string KEY = "BANK_KEY";
-    public int coins { get; set; }
-
-    public override void Initialize()
+    public class BankRepository : Repository
     {
-        this.coins = PlayerPrefs.GetInt(KEY, 0);
-    }
+        private const string KEY = "BANK_KEY";
+        public int coins { get; set; }
 
-    public override void Save()
-    {
-        PlayerPrefs.SetInt(KEY, this.coins);
+        public override void Initialize()
+        {
+            this.coins = PlayerPrefs.GetInt(KEY, 0);
+        }
+
+        public override void Save()
+        {
+            PlayerPrefs.SetInt(KEY, this.coins);
+        }
     }
 }

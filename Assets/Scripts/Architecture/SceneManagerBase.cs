@@ -66,10 +66,15 @@ namespace Architecture
             if (this.isLoading)
                 throw new Exception("Scene is loading now");
 
+            if(!this.sceneConfigMap.ContainsKey(sceneName))
+                throw new Exception(sceneName + " config map is missed");
+
             var config = this.sceneConfigMap[sceneName];
             //если в этом конфиге не будет sceneName то он выдаст Exception
             //это значит что конфиг в текущей сцене не проинициализирован
             //нужно будет создать для нее кофиг и загрузить его
+
+            //втф, exeption не выдал...
 
             return Coroutines.StartRoutine(this.LoadNewSceneRoutine(config));
         }

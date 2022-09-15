@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Architecture;
+using Gameplay;
 
-namespace Architecture.Scenes
+namespace Scenes
 {
     public class SurvivalSceneConfig : SceneConfig
     {
@@ -16,6 +15,7 @@ namespace Architecture.Scenes
             var repositoriesMap = new Dictionary<Type, Repository>();
 
             this.CreateRepository<BankRepository>(repositoriesMap);
+            this.CreateRepository<SkillsRepository>(repositoriesMap);
             //тут мы можем создавать множество таких же репозиториев, просто сейчас он существует только один
             //(Банковский репозиторий хранящий денюжки)
             //поэтому я множу код
@@ -32,6 +32,7 @@ namespace Architecture.Scenes
             var interactorsMap = new Dictionary<Type, Interactor>();
 
             this.CreateInteractor<BankInteractor>(interactorsMap);
+            this.CreateInteractor<SkillsInteractor>(interactorsMap);
             this.CreateInteractor<PlayerInteractor>(interactorsMap);
             //тут мы можем создавать множество таких же интеракторов, просто сейчас он существует только один
             //(Банковский интерактор работающий с банком)

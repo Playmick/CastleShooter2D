@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
-using System;
-using System.Collections;
-using Architecture.Scenes;
 using Architecture;
+using Scenes;
 
 public class GameController : MonoBehaviour
 {
     private void Start()
     {
-        Game.Run();
+        Game.Run(new GameSceneManager());
         Game.OnGameInitializedEvent += OnGameInitialized;
     }
 

@@ -1,8 +1,6 @@
-﻿using Architecture.Scenes;
-using Architecture.Routine;
+﻿using Architecture.Routine;
 using System.Collections;
 using System;
-using UnityEngine;
 
 namespace Architecture
 {
@@ -12,9 +10,10 @@ namespace Architecture
 
         public static event Action OnGameInitializedEvent;
         public static SceneManagerBase sceneManager { get; private set; }
-        public static void Run()
+        
+        public static void Run(SceneManagerBase sceneManager)
         {
-            sceneManager = new SceneManager();
+            Game.sceneManager = sceneManager;
             Coroutines.StartRoutine(InitializeGameRoutine());
         }
 

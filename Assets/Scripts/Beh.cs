@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Architecture;
 
 public class Beh : MonoBehaviour
 {
@@ -544,11 +545,10 @@ public class Beh : MonoBehaviour
 		while(true)
 		{
 			yield return new WaitForSeconds(3f);
-			//Debug.Log("Мы сдохли");
-			//при условии что это не финальная игра
-			//запустить сцену магазина
-			SceneManager.LoadScene("Shop");
-			
+            //Debug.Log("Мы сдохли");
+            //при условии что это не финальная игра
+            //запустить сцену магазина
+            Game.sceneManager.LoadNewSceneAsync("Shop");
 		}
 	}
 	

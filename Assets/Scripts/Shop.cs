@@ -1,142 +1,107 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using static Gameplay.SkillsInteractor;
+using Gameplay;
+using Architecture;
 
 public class Shop : MonoBehaviour
 {
 	public Text txShop;
 	
-	public Text Coins;
+	public Text txCoins;
 	
-	public Text txBonus;
-	public Text txDesBonus;
+	public Text txNameBonus;
+	public Text txDescriptionBonus;
 	
 	public Text txWarning;
 	
-	public GameObject WarnWind;//окно предупреждения
+	public GameObject warningWindow;//окно предупреждения
 	public GameObject UIShop;//остальной UI магазина
+
+    public Text txHeart;
+    public Text txPlSpeed;
+    public Text txOverheat;
+    public Text txAttack;
+    public Text txBulletSpeed;
+    public Text txShield;
+
+    private SkillsInteractor _skill;
+    
+    ShopState currentState = ShopState.shop; 
+    ShopState nextState = ShopState.shop; 
 	
-	int cur_state = 1; // состояние 1 - магазин, 2 - хотите играть? 3 - хотите выйти? 4 хотите отменить улучшения?
-	int next_state = 1; // состояние 1 - магазин, 2 - хотите играть? 3 - хотите выйти? 4 хотите отменить улучшения?
+	Skill selectedSkill = Skill.none; 
 	
-	int selBonus = 0; //выбранный бонус, 0 - нима, 1 сердце, 2 скорость, 3 перегрев, 4 сила атаки, 5 скорострельность, 6 щит
-    int spent;//сколько мы потратили монет
-	
-	//тут лучше конечно создать массив, но мне лень
-	//записываем КУДА были потрачены монеты
-	int spentHeart;
-	int spentSpeed;
-	int spentOverheat;
-	int spentAttack;
-	int spentBlSp;
-	int spentShield;
-	
-	public Text txHeart;
-	public Text txPlSpeed;
-	public Text txOverheat;
-	public Text txAttack;
-	public Text txBulletSpeed;
-	public Text txShield;
 	
 	// Start is called before the first frame update
     void Start()
     {
-		if(PlayerPrefs.GetInt("ru") == 1)
-		{
-			txShop.text = "Магазин";
-			txBonus.text = "Здесь будет название бонуса.";
-			txDesBonus.text = "Выберите один из бонусов, чтобы тут появилось его описание.";
-			txWarning.text = "У вас остались не потраченные монеты, вы действительно хотите продолжить?";
-		}
-		else
-		{
-			txShop.text = "Shop";
-			txBonus.text = "Here will be the name of the bonus.";
-			txDesBonus.text = "Select one of the bonuses and its description will appear here.";
-			txWarning.text = "Not all coins are spent, do you really want to continue?";
-		}
-		
-		//записать рекорд
-		RecordRank();
-		
-		//обнуляем потраченные на перки монеты
-		spentHeart = 0;
-		spentSpeed = 0;
-		spentOverheat = 0;
-		spentAttack = 0;
-		spentBlSp = 0;
-		spentShield = 0;
-		spent = 0;
-		
-		txBonus = GameObject.Find("txName").GetComponent<Text>();
-		txDesBonus = GameObject.Find("txDes").GetComponent<Text>();
-		
-		
-        Coins = GameObject.Find("txCoins").GetComponent<Text>();
-		if (PlayerPrefs.HasKey("coins"))
-			Coins.text = PlayerPrefs.GetInt("coins").ToString();
-		else
-		{
-			PlayerPrefs.SetInt("coins", 0);
-			Coins.text = "0";
-		}
-		
-		if (!PlayerPrefs.HasKey("Heart"))
-			PlayerPrefs.SetInt("Heart", 0);
-		if (!PlayerPrefs.HasKey("PlSpeed"))
-			PlayerPrefs.SetInt("PlSpeed", 0);
-		if (!PlayerPrefs.HasKey("Overheat"))
-			PlayerPrefs.SetInt("Overheat", 0);
-		if (!PlayerPrefs.HasKey("Attack"))
-			PlayerPrefs.SetInt("Attack", 0);
-		if (!PlayerPrefs.HasKey("BulletSpeed"))
-			PlayerPrefs.SetInt("BulletSpeed", 0);
-		if (!PlayerPrefs.HasKey("Shield"))
-			PlayerPrefs.SetInt("Shield", 0);
-		
-		txHeart.text = PlayerPrefs.GetInt("Heart").ToString();
-		txPlSpeed.text = PlayerPrefs.GetInt("PlSpeed").ToString();
-		txOverheat.text = PlayerPrefs.GetInt("Overheat").ToString();
-		txAttack.text = PlayerPrefs.GetInt("Attack").ToString();
-		txBulletSpeed.text = PlayerPrefs.GetInt("BulletSpeed").ToString();
-		txShield.text = PlayerPrefs.GetInt("Shield").ToString();
-		
-		if(PlayerPrefs.GetInt("Heart")==10 
-			&& PlayerPrefs.GetInt("PlSpeed")==10 
-			&& PlayerPrefs.GetInt("Overheat") ==10
-			&& PlayerPrefs.GetInt("Attack") ==10
-			&& PlayerPrefs.GetInt("BulletSpeed")==10
-			&& PlayerPrefs.GetInt("Shield")==10)
-			SceneManager.LoadScene("Leaderboard");
-		
-		//выключить окно подтверждения
-		WarnWind.SetActive(false);
+        if (PlayerPrefs.GetInt("ru") == 1)
+        {
+            txShop.text = "Магазин";
+            txNameBonus.text = "Здесь будет название бонуса.";
+            txDescriptionBonus.text = "Выберите один из бонусов, чтобы тут появилось его описание.";
+            txWarning.text = "У вас остались не потраченные монеты, вы действительно хотите продолжить?";
+        }
+        else
+        {
+            txShop.text = "Shop";
+            txNameBonus.text = "Here will be the name of the bonus.";
+            txDescriptionBonus.text = "Select one of the bonuses and its description will appear here.";
+            txWarning.text = "Not all coins are spent, do you really want to continue?";
+        }
+
+        //записать рекорд
+        RecordRank();
+
+        txCoins.text = Bank.coins.ToString();
+        if (!Game.isRun)
+            Game.OnGameInitializedEvent += OnSkillInitialize;
+        else
+            OnSkillInitialize();
+
+        //выключить окно подтверждения
+        warningWindow.SetActive(false);
     }
-	
-	void Update()
+
+    private void OnSkillInitialize()
+    {
+        _skill = Game.GetInteractor<SkillsInteractor>();
+
+        txHeart.text = _skill.heart.ToString();
+        txPlSpeed.text = _skill.playerSpeed.ToString();
+        txOverheat.text = _skill.overheat.ToString();
+        txAttack.text = _skill.attack.ToString();
+        txBulletSpeed.text = _skill.bulletSpeed.ToString();
+        txShield.text = _skill.luck.ToString();
+
+        if (_skill.IsMax())
+            SceneManager.LoadScene("Leaderboard");
+    }
+
+    void Update()
 	{
 		//если следующее состояние не совпадает с текущим
-		if(cur_state != next_state)
+		if(currentState != nextState)
 		{
 			//если след состояние магазин
-			if(next_state == 1)
+			if(nextState == ShopState.shop)
 			{
 				//включить магаз
 				UIShop.SetActive(true);
 				
 				//выключить окно подтверждения
-				WarnWind.SetActive(false);
+				warningWindow.SetActive(false);
 			}
 			
 			//если след состояние хотите играть?
-			if(next_state == 2)
+			if(nextState == ShopState.doYouWantPlay)
 			{
 				//выключаем магазин
 				UIShop.SetActive(false);
 				//включаем окно предупреждения
-				WarnWind.SetActive(true);
+				warningWindow.SetActive(true);
 				
 				//пишем надпись "монеты не кончились"
 				if(PlayerPrefs.GetInt("ru") == 1)
@@ -146,12 +111,12 @@ public class Shop : MonoBehaviour
 			}
 			
 			//если след состояние хотите выйти?
-			if(next_state == 3)
+			if(nextState == ShopState.doYouWantExit)
 			{
 				//выключаем магазин
 				UIShop.SetActive(false);
 				//включаем окно предупреждения
-				WarnWind.SetActive(true);
+				warningWindow.SetActive(true);
 				
 				//пишем надпись "Вы потеряете все достижения, ваш текущий счёт останется в меню score"
 				if(PlayerPrefs.GetInt("ru") == 1)
@@ -161,12 +126,12 @@ public class Shop : MonoBehaviour
 			}
 			
 			//если след состояние отменить улучшения?
-			if(next_state == 4)
+			if(nextState == ShopState.doYouWantResetChanges)
 			{
 				//выключаем магазин
 				UIShop.SetActive(false);
 				//включаем окно предупреждения
-				WarnWind.SetActive(true);
+				warningWindow.SetActive(true);
 				
 				//пишем надпись "Все выбранные улучшения обнулятся, а потраченные монеты вернуться к вам на счёт, вы уверены что хотите этого?"
 				if(PlayerPrefs.GetInt("ru") == 1)
@@ -176,85 +141,57 @@ public class Shop : MonoBehaviour
 			}
 			
 			//приравниваем состояния
-			cur_state = next_state;
+			currentState = nextState;
 		}
 	}
 	
 	//кнопка в меню
 	public void OnClickMainMenu()
 	{
-		next_state = 3;
+		nextState = ShopState.doYouWantExit;
 	}
 	
 	//сбросить бонусы
 	public void OnClickCancelBonuses()
 	{
-		next_state = 4;
+		nextState = ShopState.doYouWantResetChanges;
 	}
 	
 	//отмена предупреждающего окна
 	public void OnClickCancel()
 	{
-		next_state = 1;
+		nextState = ShopState.shop;
 	}
 	
 	//принять предупреждающее окно
 	public void OnClickConfirm()
 	{
 		//если тек состояние хотите играть?
-		if(cur_state == 2)
+		if(currentState == ShopState.doYouWantPlay)
 		{
 			//запускаем игру
 			SceneManager.LoadScene("Survival");
 		}
 		
 		//если тек состояние хотите выйти?
-		if(cur_state == 3)
+		if(currentState == ShopState.doYouWantExit)
 		{
 			SceneManager.LoadScene("MainMenu");
 		}
 		
 		//если тек состояние отменить улучшения?
-		if(cur_state == 4)
+		if(currentState == ShopState.doYouWantResetChanges)
 		{
-			//добавляем потраченные монеты к текущим
-			PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins") + spent);
-			
-			Coins.text = PlayerPrefs.GetInt("coins").ToString();
-			
-			//обнуляем потраченные монеты
-			spent = 0;
-			
-			//снимаем перки
-			PlayerPrefs.SetInt("Heart", PlayerPrefs.GetInt("Heart") - spentHeart);
-			PlayerPrefs.SetInt("PlSpeed", PlayerPrefs.GetInt("PlSpeed") - spentSpeed);
-			PlayerPrefs.SetInt("Overheat", PlayerPrefs.GetInt("Overheat") - spentOverheat);
-			PlayerPrefs.SetInt("Attack", PlayerPrefs.GetInt("Attack") - spentAttack);
-			PlayerPrefs.SetInt("BulletSpeed", PlayerPrefs.GetInt("BulletSpeed") - spentBlSp);
-			PlayerPrefs.SetInt("Shield", PlayerPrefs.GetInt("Shield") - spentShield);
-			
-			txHeart.text = PlayerPrefs.GetInt("Heart").ToString();
-			txPlSpeed.text = PlayerPrefs.GetInt("PlSpeed").ToString();
-			txOverheat.text = PlayerPrefs.GetInt("Overheat").ToString();
-			txAttack.text = PlayerPrefs.GetInt("Attack").ToString();
-			txBulletSpeed.text = PlayerPrefs.GetInt("BulletSpeed").ToString();
-			txShield.text = PlayerPrefs.GetInt("Shield").ToString();
-			
-			spentHeart = 0;
-			spentSpeed = 0;
-			spentOverheat = 0;
-			spentAttack = 0;
-			spentBlSp = 0;
-			spentShield = 0;
+			txCoins.text = _skill.ResetChanges().ToString();
 			
 			//включить магаз
 			UIShop.SetActive(true);
 				
 			//выключить окно подтверждения
-			WarnWind.SetActive(false);
+			warningWindow.SetActive(false);
 			
-			cur_state = 1;
-			next_state = 1;
+			currentState = ShopState.shop;
+			nextState = ShopState.shop;
 		}
 	}
 	
@@ -264,15 +201,11 @@ public class Shop : MonoBehaviour
 		
 		
 		//если остались монетки
-		if(PlayerPrefs.GetInt("coins")>0)
-		{
-			//выводим предупреждение
-			next_state = 2;
-			
-		}
+		if(Bank.coins>0)
+		    nextState = ShopState.doYouWantPlay;
 		
 		//если монеток ноль запускаем игру
-		if(PlayerPrefs.GetInt("coins")==0)
+		if(Bank.coins == 0)
 			SceneManager.LoadScene("Survival");
 	}
 	
@@ -283,317 +216,144 @@ public class Shop : MonoBehaviour
 	
 	public void OnClickUpHeart()
 	{
-		selBonus = 1;
+		selectedSkill = Skill.heart;
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
-			txBonus.text = "Очки здоровья";
-			txDesBonus.text = "Этот бонус даёт дополнительные очки здоровья. Повысь свою живучесть и сможешь выдерживать больше ударов судьбы, ну... или ножа.";
+			txNameBonus.text = "Очки здоровья";
+			txDescriptionBonus.text = "Этот бонус даёт дополнительные очки здоровья. Повысь свою живучесть и сможешь выдерживать больше ударов судьбы, ну... или ножа.";
 		}
 		else
 		{
-			txBonus.text = "Health points";
-			txDesBonus.text = "This bonus gives you an extra health point.";
+			txNameBonus.text = "Health points";
+			txDescriptionBonus.text = "This bonus gives you an extra health point.";
 		}
 	}
 	
 	public void OnClickUpPlSpeed()
 	{
-		selBonus = 2;
+		selectedSkill = Skill.playerSpeed;
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
-			txBonus.text = "Скорость движения";
-			txDesBonus.text = "Вы будете бегать шустрее.";
+			txNameBonus.text = "Скорость движения";
+			txDescriptionBonus.text = "Вы будете бегать шустрее.";
 		}
 		else
 		{
-			txBonus.text = "Player speed";
-			txDesBonus.text = "This bonus makes you faster.";
+			txNameBonus.text = "Player speed";
+			txDescriptionBonus.text = "This bonus makes you faster.";
 		}
 	}
 	
 	public void OnClickUpOverheat()
 	{
-		selBonus = 3;
+		selectedSkill = Skill.overheat;
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
-			txBonus.text = "Снижение перегрева";
-			txDesBonus.text = "Оружие будет охлаждаться быстрее.";
+			txNameBonus.text = "Снижение перегрева";
+			txDescriptionBonus.text = "Оружие будет охлаждаться быстрее.";
 		}
 		else
 		{
-			txBonus.text = "Reduction of overheating";
-			txDesBonus.text = "Your weapon will cool faster.";
+			txNameBonus.text = "Reduction of overheating";
+			txDescriptionBonus.text = "Your weapon will cool faster.";
 		}
 	}
 	
 	public void OnClickUpAttack()
 	{
-		selBonus = 4;
+		selectedSkill = Skill.attack;
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
-			txBonus.text = "Сила атаки";
-			txDesBonus.text = "Выстрелы будут наносить чуточку больше урона.";
+			txNameBonus.text = "Сила атаки";
+			txDescriptionBonus.text = "Выстрелы будут наносить чуточку больше урона.";
 		}
 		else
 		{
-			txBonus.text = "Attack power";
-			txDesBonus.text = "Your bullets will do a little more damage.";
+			txNameBonus.text = "Attack power";
+			txDescriptionBonus.text = "Your bullets will do a little more damage.";
 		}
 	}
 	
 	public void OnClickUpBulletSpeed()
 	{
-		selBonus = 5;
+		selectedSkill = Skill.bulletSpeed;
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
-			txBonus.text = "Скорость снарядов";
-			txDesBonus.text = "Снаряды будут летать быстрее! Словно у них появился джетпак...";
+			txNameBonus.text = "Скорость снарядов";
+			txDescriptionBonus.text = "Снаряды будут летать быстрее! Словно у них появился джетпак...";
 		}
 		else
 		{
-			txBonus.text = "Bullet speed";
-			txDesBonus.text = "Your bullets will fly faster! As if they have a jetpack...";
+			txNameBonus.text = "Bullet speed";
+			txDescriptionBonus.text = "Your bullets will fly faster! As if they have a jetpack...";
 		}
 	}
 	
 	public void OnClickUpShield()
 	{
-		selBonus = 6;
+		selectedSkill = Skill.luck;
 		if(PlayerPrefs.GetInt("ru") == 1)
 		{
-			txBonus.text = "Удача!";
-			txDesBonus.text = "Монеты будут попадаться чаще! Кто не хочет быть богатым?!";
+			txNameBonus.text = "Удача!";
+			txDescriptionBonus.text = "Монеты будут попадаться чаще! Кто не хочет быть богатым?!";
 		}
 		else
 		{
-			txBonus.text = "Luck!";
-			txDesBonus.text = "Coins will drop out more often!";
+			txNameBonus.text = "Luck!";
+			txDescriptionBonus.text = "txCoins will drop out more often!";
 		}
 	}
 	
 	public void OnClickUpgrade()
 	{
-		if(PlayerPrefs.GetInt("coins") > 0)
+		if(Bank.IsEnoughtCoins(1))
 		{
-			//у нас достаточно монет
-			
-			//проверяем какой перк выбран
-			//добавляем перк
-			switch(selBonus)
-			{
-				
-				case 1:
-					if(PlayerPrefs.GetInt("Heart")<10)
-					{
-						PlayerPrefs.SetInt("Heart", PlayerPrefs.GetInt("Heart")+1);
-						txHeart.text = PlayerPrefs.GetInt("Heart").ToString();
-						spentHeart++;
-						//вычитаем одну монетку
-						PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins")-1);
-						//добавляем одну потраченную монетку
-							spent++;
-					}
-					else
-					{
-						//Этот параметр достиг максимума, его больше нельзя улучшать.
-						if(PlayerPrefs.GetInt("ru") == 1)
-						{
-							txBonus.text = "Максимальное значение";
-							txDesBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
-						}
-						else
-						{
-							txBonus.text = "Maximum value";
-							txDesBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
-						}
-					}
-				break;
-				case 2:
-					if(PlayerPrefs.GetInt("PlSpeed")<10)
-					{
-						PlayerPrefs.SetInt("PlSpeed", PlayerPrefs.GetInt("PlSpeed")+1);
-						txPlSpeed.text = PlayerPrefs.GetInt("PlSpeed").ToString();
-						spentSpeed++;
-						//вычитаем одну монетку
-						PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins")-1);
-						//добавляем одну потраченную монетку
-							spent++;
-					}
-					else
-					{
-						//Этот параметр достиг максимума, его больше нельзя улучшать.
-						if(PlayerPrefs.GetInt("ru") == 1)
-						{
-							txBonus.text = "Максимальное значение";
-							txDesBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
-						}
-						else
-						{
-							txBonus.text = "Maximum value";
-							txDesBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
-						}
-					}
-				break;
-				case 3:
-					if(PlayerPrefs.GetInt("Overheat")<10)
-					{
-						PlayerPrefs.SetInt("Overheat", PlayerPrefs.GetInt("Overheat")+1);
-						txOverheat.text = PlayerPrefs.GetInt("Overheat").ToString();
-						spentOverheat++;
-						//вычитаем одну монетку
-						PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins")-1);
-						//добавляем одну потраченную монетку
-							spent++;
-					}
-					else
-					{
-						//Этот параметр достиг максимума, его больше нельзя улучшать.
-						if(PlayerPrefs.GetInt("ru") == 1)
-						{
-							txBonus.text = "Максимальное значение";
-							txDesBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
-						}
-						else
-						{
-							txBonus.text = "Maximum value";
-							txDesBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
-						}
-					}
-				break;
-				case 4:
-					if(PlayerPrefs.GetInt("Attack")<10)
-					{
-						PlayerPrefs.SetInt("Attack", PlayerPrefs.GetInt("Attack")+1);
-						txAttack.text = PlayerPrefs.GetInt("Attack").ToString();
-						spentAttack++;
-						//вычитаем одну монетку
-						PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins")-1);
-						//добавляем одну потраченную монетку
-							spent++;
-					}
-					else
-					{
-						//Этот параметр достиг максимума, его больше нельзя улучшать.
-						if(PlayerPrefs.GetInt("ru") == 1)
-						{
-							txBonus.text = "Максимальное значение";
-							txDesBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
-						}
-						else
-						{
-							txBonus.text = "Maximum value";
-							txDesBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
-						}
-					}
-				break;
-				case 5:
-					if(PlayerPrefs.GetInt("BulletSpeed")<10)
-					{
-						PlayerPrefs.SetInt("BulletSpeed", PlayerPrefs.GetInt("BulletSpeed")+1);
-						txBulletSpeed.text = PlayerPrefs.GetInt("BulletSpeed").ToString();
-						spentBlSp++;
-						//вычитаем одну монетку
-						PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins")-1);
-						//добавляем одну потраченную монетку
-							spent++;
-					}
-					else
-					{
-						//Этот параметр достиг максимума, его больше нельзя улучшать.
-						if(PlayerPrefs.GetInt("ru") == 1)
-						{
-							txBonus.text = "Максимальное значение";
-							txDesBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
-						}
-						else
-						{
-							txBonus.text = "Maximum value";
-							txDesBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
-						}
-					}
-				break;
-				case 6:
-					if(PlayerPrefs.GetInt("Shield")<10)
-					{
-						PlayerPrefs.SetInt("Shield", PlayerPrefs.GetInt("Shield")+1);
-						txShield.text = PlayerPrefs.GetInt("Shield").ToString();
-						spentShield++;
-						//вычитаем одну монетку
-						PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins")-1);
-						//добавляем одну потраченную монетку
-							spent++;
-					}
-					else
-					{
-						//Этот параметр достиг максимума, его больше нельзя улучшать.
-						if(PlayerPrefs.GetInt("ru") == 1)
-						{
-							txBonus.text = "Максимальное значение";
-							txDesBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
-						}
-						else
-						{
-							txBonus.text = "Maximum value";
-							txDesBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
-						}
-					}
-				break;
-				default:
-					
-					//написать что  вы не выбрали бонус
-					if(PlayerPrefs.GetInt("ru") == 1)
-					{
-						txBonus.text = "Упс..!";
-						txDesBonus.text = "Похоже, вы не выбрали бонус, сначала нужно кликнуть на один из бонусов выше.";
-					}
-					else
-					{
-						txBonus.text = "Oops..!";
-						txDesBonus.text = "Looks like you didn't choose a bonus, you should first click on one of the buttons above.";
-					}
-					
-				break;
-				
-			}
-			
-			//убавить одну монетку на UI
-			Coins.text = PlayerPrefs.GetInt("coins").ToString();
-			
-			
+            if(selectedSkill == Skill.none)
+            {
+                //написать что  вы не выбрали бонус
+                if (PlayerPrefs.GetInt("ru") == 1)
+                {
+                    txNameBonus.text = "Упс..!";
+                    txDescriptionBonus.text = "Похоже, вы не выбрали бонус, сначала нужно кликнуть на один из бонусов выше.";
+                }
+                else
+                {
+                    txNameBonus.text = "Oops..!";
+                    txDescriptionBonus.text = "Looks like you didn't choose a bonus, you should first click on one of the buttons above.";
+                }
+            }
+            else if (!_skill.AddSkill(selectedSkill))
+            {
+                //Этот параметр достиг максимума, его больше нельзя улучшать.
+                if (PlayerPrefs.GetInt("ru") == 1)
+                {
+                    txNameBonus.text = "Максимальное значение";
+                    txDescriptionBonus.text = "Этот параметр достиг максимума. К сожалению, его больше нельзя улучшать.";
+                }
+                else
+                {
+                    txNameBonus.text = "Maximum value";
+                    txDescriptionBonus.text = "This parameter has reached the maximum, it can no longer be improved.";
+                }
+                Bank.Spend(this, 1);
+
+                //убавить одну монетку на UI
+                txCoins.text = Bank.coins.ToString();
+            }
+            
 		}
 		else
 		{
-			//если бонус выбран
-			if(selBonus>0)
+			if(PlayerPrefs.GetInt("ru") == 1)
 			{
-				//написать что не хватает монет
-					if(PlayerPrefs.GetInt("ru") == 1)
-					{
-						txBonus.text = "Не хваает монет.";
-						txDesBonus.text = "Похоже, у тебя нет монет... Видимо, пора вернуться в бой! Или посмотреть рекламу...";
-					}
-					else
-					{
-						txBonus.text = "Not enough coins.";
-						txDesBonus.text = "Looks like you're out of coins... It's time to get back into the fight! Or watch an ad...";
-					}
-				
+				txNameBonus.text = "Не хватает монет.";
+				txDescriptionBonus.text = "Похоже, у тебя нет монет... Видимо, пора вернуться в бой! Или посмотреть рекламу...";
 			}
 			else
 			{
-				//написать что  вы не выбрали бонус
-				if(PlayerPrefs.GetInt("ru") == 1)
-				{
-					txBonus.text = "Упс..!";
-					txDesBonus.text = "Похоже вы не выбрали бонус, сначала нужно кликнуть на один из бонусов выше.";
-				}
-				else
-				{
-					txBonus.text = "Oops..!";
-					txDesBonus.text = "Looks like you didn't choose a bonus, you should first click on one of the buttons above.";
-				}
+				txNameBonus.text = "Not enough coins.";
+				txDescriptionBonus.text = "Looks like you're out of coins... It's time to get back into the fight! Or watch an ad...";
 			}
-			
 		}
 	}
 	
